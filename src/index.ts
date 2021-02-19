@@ -2,10 +2,16 @@ import { User } from './models/User';
 
 const user = new User({ name: 'Andy', age: 20 });
 
-user.on('change', () => {});
+user.on('change', () => {
+	console.log('change #1');
+});
 
-user.on('change', () => {});
+user.on('change', () => {
+	console.log('change #2');
+});
 
-user.on('tick', () => {});
+user.on('tick', () => {
+	console.log('save #1');
+});
 
-console.log(user);
+user.trigger('cat');
