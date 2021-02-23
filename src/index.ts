@@ -1,17 +1,5 @@
 import { User } from './models/User';
 
-const user = new User({ name: 'Andy', age: 20 });
+const user = new User({ id: 1 });
 
-user.on('change', () => {
-	console.log('change #1');
-});
-
-user.on('change', () => {
-	console.log('change #2');
-});
-
-user.on('tick', () => {
-	console.log('save #1');
-});
-
-user.trigger('cat');
+user.fetch();
