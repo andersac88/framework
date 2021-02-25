@@ -1917,7 +1917,39 @@ module.exports.default = axios;
 
 },{"./utils":"node_modules/axios/lib/utils.js","./helpers/bind":"node_modules/axios/lib/helpers/bind.js","./core/Axios":"node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"node_modules/axios/lib/core/mergeConfig.js","./defaults":"node_modules/axios/lib/defaults.js","./cancel/Cancel":"node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"node_modules/axios/lib/helpers/spread.js","./helpers/isAxiosError":"node_modules/axios/lib/helpers/isAxiosError.js"}],"node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"src/models/User.ts":[function(require,module,exports) {
+},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"src/models/Eventing.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Eventing = void 0;
+
+var Eventing =
+/** @class */
+function () {
+  function Eventing() {
+    this.events = {};
+  }
+
+  Eventing.prototype.on = function (eventName, callback) {
+    var handlers = this.events[eventName] || [];
+    handlers.push(callback);
+    this.events[eventName] = handlers;
+  };
+
+  Eventing.prototype.trigger = function (eventName) {
+    var handlers = this.events[eventName] || [];
+    handlers.forEach(function (callback) {
+      return callback();
+    });
+  };
+
+  return Eventing;
+}();
+
+exports.Eventing = Eventing;
+},{}],"src/models/User.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1933,11 +1965,14 @@ exports.User = void 0;
 
 var axios_1 = __importDefault(require("axios"));
 
+var Eventing_1 = require("./Eventing");
+
 var User =
 /** @class */
 function () {
   function User(data) {
     this.data = data;
+    this.events = new Eventing_1.Eventing();
   }
 
   User.prototype.get = function (propName) {
@@ -1970,7 +2005,7 @@ function () {
 }();
 
 exports.User = User;
-},{"axios":"node_modules/axios/index.js"}],"src/index.ts":[function(require,module,exports) {
+},{"axios":"node_modules/axios/index.js","./Eventing":"src/models/Eventing.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1983,7 +2018,10 @@ var user = new User_1.User({
   name: 'New Record',
   age: 0
 });
-user.save();
+user.events.on('change', function () {
+  console.log('change!');
+});
+user.events.trigger('change');
 },{"./models/User":"src/models/User.ts"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
